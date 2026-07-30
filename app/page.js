@@ -12,65 +12,55 @@ import ClipCard from "../components/ClipCard";
 import useUpload from "../hooks/useUpload";
 
 export default function Home() {
-  const [file, setFile] = useState(null);
+  const [video, setVideo] = useState(null);
 
   const {
-    upload,
-    loading,
+    uploading,
     progress,
     result,
-    error,
+    upload,
   } = useUpload();
 
-  async function handleFile(selectedFile) {
-    setFile(selectedFile);
-    await upload(selectedFile);
+  async function handleSelect(file) {
+    setVideo(URL.createObjectURL(file));
+
+    await upload(file);
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-black flex">
 
-      <Navbar />
+      <Sidebar />
 
-      <div className="flex">
+      <div className="flex-1">
 
-        <Sidebar />
+        <Navbar />
 
-        <main className="flex-1 p-8">
+        <div className="grid grid-cols-2 gap-6 p-8">
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          <div className="space-y-6">
 
-            <div className="space-y-6">
+            <UploadBox
+              onSelect={handleSelect}
+              uploading={uploading}
+            />
 
-              <UploadBox
-                onSelect={handleFile}
-                uploading={loading}
-              />
-
-              <Progress progress={progress} />
-
-            </div>
-
-            <div className="space-y-6">
-
-              <VideoPlayer file={file} />
-
-              <ClipCard result={result} />
-
-            </div>
+            <Progress progress={progress} />
 
           </div>
 
-          {error && (
-            <div className="mt-8 rounded-xl bg-red-500/20 border border-red-500 p-4">
-              {error}
-            </div>
-          )}
+          <div className="space-y-6">
 
-        </main>
+            <VideoPlayer video={video} />
+
+            {result && <ClipCard />}
+
+          </div>
+
+        </div>
 
       </div>
 
-    </div>
+    </main>
   );
 }
