@@ -1,9 +1,14 @@
-export const metadata = { title: "CLIPFORGE AI" };
+import "./globals.css";
 
-export default function Layout({children}) {
- return (
-  <html lang="en">
-   <body>{children}</body>
-  </html>
- )
+export const metadata = {
+  title: "CLIPFORGE AI",
+  description: "AI Shorts Generator",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
