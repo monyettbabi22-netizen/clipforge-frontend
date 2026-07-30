@@ -1,29 +1,48 @@
 "use client";
 
-export default function VideoPlayer(){
+import { useEffect, useState } from "react";
 
-return(
+export default function VideoPlayer({ file }) {
+  const [videoUrl, setVideoUrl] = useState("");
 
-<div className="bg-zinc-900 rounded-xl p-6">
+  useEffect(() => {
+    if (!file) {
+      setVideoUrl("");
+      return;
+    }
 
-<h2 className="text-white mb-5">
+    const url = URL.createObjectURL(file);
 
-Preview
+    setVideoUrl(url);
 
-</h2>
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [file]);
 
-<video
+  return (
+    <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg">
 
-controls
+      <h2 className="text-xl font-bold text-white mb-5">
+        🎬 Video Preview
+      </h2>
 
-className="rounded-xl w-full"
+      {!file ? (
+        <div className="h-72 rounded-xl bg-zinc-800 flex items-center justify-center">
 
->
+          <p className="text-zinc-400">
+            Belum ada video dipilih
+          </p>
 
-</video>
+        </div>
+      ) : (
+        <video
+          src={videoUrl}
+          controls
+          className="rounded-xl w-full max-h-[500px]"
+        />
+      )}
 
-</div>
-
-);
-
+    </div>
+  );
 }
