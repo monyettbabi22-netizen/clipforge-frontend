@@ -1,45 +1,55 @@
 "use client";
 
-export default function ClipCard(){
+export default function ClipCard({ result }) {
 
-return(
+  if (!result) return null;
 
-<div className="bg-zinc-900 rounded-xl p-5">
+  return (
 
-<h2 className="text-white text-lg">
+    <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg">
 
-Clip Result
+      <h2 className="text-white text-xl font-bold mb-5">
 
-</h2>
+        🎬 Clip Result
 
-<div className="mt-4 text-gray-300">
+      </h2>
 
-Duration :
+      <div className="space-y-3">
 
-25 Seconds
+        <div className="text-zinc-300">
 
-</div>
+          <strong>Message :</strong>
 
-<div className="text-gray-300">
+          <br />
 
-Viral Score :
+          {result.message}
 
-95%
+        </div>
 
-</div>
+        <div className="text-zinc-300">
 
-<button
+          <strong>Uploaded File :</strong>
 
-className="mt-5 bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-lg"
+          <br />
 
->
+          {result.file}
 
-Download
+        </div>
 
-</button>
+      </div>
 
-</div>
+      <button
 
-);
+        className="mt-6 w-full rounded-xl bg-green-500 hover:bg-green-400 text-black font-semibold py-3"
+
+      >
+
+        Download (Coming Soon)
+
+      </button>
+
+    </div>
+
+  );
 
 }
