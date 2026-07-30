@@ -4,87 +4,30 @@ import { useState } from "react";
 import { uploadVideo } from "../lib/upload";
 
 export default function useUpload() {
-
-  const [loading, setLoading] = useState(false);
-
+  const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-
   const [result, setResult] = useState(null);
 
-  const [error, setError] = useState("");
-
-  const upload = async (file) => {
+  async function upload(file) {
+    setUploading(true);
+    setProgress(20);
 
     try {
-
-      setLoading(true);
-
-      setError("");
-
-      setResult(null);
-
-      setProgress(10);
-
-      const timer = setInterval(() => {
-
-        setProgress((prev) => {
-
-          if (prev >= 90) return prev;
-
-          return prev + 10;
-
-        });
-
-      }, 300);
-
-      const response = await uploadVideo(file);
-
-      clearInterval(timer);
+      const data = await uploadVideo(file);
 
       setProgress(100);
+      setResult(data);
 
-      setResult(response);
-
-    } catch (err) {
-
-      console.error(err);
-
-      setError("Gagal menghubungi AI Engine.");
-
+      return data;
     } finally {
-
-      setLoading(false);
-
+      setUploading(false);
     }
-
-  };
-
-  const reset = () => {
-
-    setProgress(0);
-
-    setResult(null);
-
-    setError("");
-
-    setLoading(false);
-
-  };
+  }
 
   return {
-
-    upload,
-
-    loading,
-
+    uploading,
     progress,
-
     result,
-
-    error,
-
-    reset
-
+    upload,
   };
-
 }
