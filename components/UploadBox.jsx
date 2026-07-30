@@ -1,80 +1,71 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { formatFileSize } from "../lib/utils";
+import { useRef } from "react";
 
-export default function UploadBox() {
+export default function UploadBox({
+  onSelect,
+  uploading,
+}) {
   const inputRef = useRef(null);
 
-  const [file, setFile] = useState(null);
-
-  const [previewName, setPreviewName] = useState("");
-
-  const [fileSize, setFileSize] = useState("");
-
-  function handleSelect(selectedFile) {
-    if (!selectedFile) return;
-
-    if (!selectedFile.type.startsWith("video/")) {
-      alert("Silakan pilih file video.");
-      return;
-    }
-
-    setFile(selectedFile);
-    setPreviewName(selectedFile.name);
-    setFileSize(formatFileSize(selectedFile.size));
-  }
-
-  function handleInputChange(event) {
-    const selected = event.target.files[0];
-    handleSelect(selected);
-  }
-
-  function openFilePicker() {
+  const openPicker = () => {
     inputRef.current?.click();
-  }
+  };
+
+  const handleChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    onSelect(file);
+  };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 p-8">
 
       <input
         ref={inputRef}
         type="file"
         accept="video/*"
-        hidden
-        onChange={handleInputChange}
+        className="hidden"
+        onChange={handleChange}
       />
 
-      <div
-        onClick={openFilePicker}
-        className="cursor-pointer rounded-xl border-2 border-dashed border-gray-500 p-12 text-center hover:border-cyan-400 transition"
-      >
-        <h2 className="text-2xl font-bold">
+      <div className="flex flex-col items-center gap-5">
+
+        <div className="text-6xl">
+          🎬
+        </div>
+
+        <h2 className="text-2xl font-bold text-white">
           Upload Video
         </h2>
 
-        <p className="mt-3 text-gray-400">
-          Klik di sini untuk memilih video
+        <p className="text-zinc-400 text-center">
+          Pilih video yang ingin diproses oleh
+          ClipForge AI.
         </p>
+
+        <button
+          onClick={openPicker}
+          disabled={uploading}
+          className="
+            rounded-xl
+            bg-cyan-500
+            px-6
+            py-3
+            font-semibold
+            text-black
+            hover:bg-cyan-400
+            disabled:opacity-50
+          "
+        >
+          {uploading
+            ? "Uploading..."
+            : "Pilih Video"}
+        </button>
+
       </div>
-
-      {file && (
-        <div className="mt-6 rounded-lg bg-zinc-900 p-5">
-
-          <h3 className="font-semibold text-lg">
-            File Dipilih
-          </h3>
-
-          <p className="mt-2">
-            {previewName}
-          </p>
-
-          <p className="text-gray-400">
-            {fileSize}
-          </p>
-
-        </div>
-      )}
 
     </div>
   );
