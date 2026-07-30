@@ -1,53 +1,81 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { formatFileSize } from "../lib/utils";
 
 export default function UploadBox() {
+  const inputRef = useRef(null);
 
-const [file,setFile]=useState(null);
+  const [file, setFile] = useState(null);
 
-return(
+  const [previewName, setPreviewName] = useState("");
 
-<div className="bg-zinc-900 rounded-xl p-8">
+  const [fileSize, setFileSize] = useState("");
 
-<h2 className="text-white text-xl mb-4">
-Upload Video
-</h2>
+  function handleSelect(selectedFile) {
+    if (!selectedFile) return;
 
-<input
+    if (!selectedFile.type.startsWith("video/")) {
+      alert("Silakan pilih file video.");
+      return;
+    }
 
-type="file"
+    setFile(selectedFile);
+    setPreviewName(selectedFile.name);
+    setFileSize(formatFileSize(selectedFile.size));
+  }
 
-accept="video/*"
+  function handleInputChange(event) {
+    const selected = event.target.files[0];
+    handleSelect(selected);
+  }
 
-onChange={(e)=>setFile(e.target.files[0])}
+  function openFilePicker() {
+    inputRef.current?.click();
+  }
 
-/>
+  return (
+    <div className="w-full max-w-2xl mx-auto">
 
-{file && (
+      <input
+        ref={inputRef}
+        type="file"
+        accept="video/*"
+        hidden
+        onChange={handleInputChange}
+      />
 
-<div className="mt-4 text-green-400">
+      <div
+        onClick={openFilePicker}
+        className="cursor-pointer rounded-xl border-2 border-dashed border-gray-500 p-12 text-center hover:border-cyan-400 transition"
+      >
+        <h2 className="text-2xl font-bold">
+          Upload Video
+        </h2>
 
-Selected :
+        <p className="mt-3 text-gray-400">
+          Klik di sini untuk memilih video
+        </p>
+      </div>
 
-{file.name}
+      {file && (
+        <div className="mt-6 rounded-lg bg-zinc-900 p-5">
 
-</div>
+          <h3 className="font-semibold text-lg">
+            File Dipilih
+          </h3>
 
-)}
+          <p className="mt-2">
+            {previewName}
+          </p>
 
-<button
+          <p className="text-gray-400">
+            {fileSize}
+          </p>
 
-className="mt-6 bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-xl"
+        </div>
+      )}
 
->
-
-Generate Shorts
-
-</button>
-
-</div>
-
-);
-
+    </div>
+  );
 }
