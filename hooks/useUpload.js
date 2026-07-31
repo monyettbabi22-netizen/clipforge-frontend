@@ -1,33 +1,24 @@
-"use client";
+async function upload(file) {
+  setUploading(true);
+  setProgress(20);
 
-import { useState } from "react";
-import { uploadVideo } from "../lib/upload";
+  try {
+    const data = await uploadVideo(file);
 
-export default function useUpload() {
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState(null);
+    setProgress(100);
+    setResult(data);
 
-  async function upload(file) {
-    setUploading(true);
-    setProgress(20);
+    return data;
+  } catch (err) {
+    console.error("UPLOAD ERROR:", err);
 
-    try {
-      const data = await uploadVideo(file);
-
-      setProgress(100);
-      setResult(data);
-
-      return data;
-    } finally {
-      setUploading(false);
+    if (err.response) {
+      console.error("Status:", err.response.status);
+      console.error("Data:", err.response.data);
     }
-  }
 
-  return {
-    uploading,
-    progress,
-    result,
-    upload,
-  };
+    throw err;
+  } finally {
+    setUploading(false);
+  }
 }
